@@ -1,16 +1,46 @@
-import plotly.express as px
-import plotly.offline as opy
-import plotly.graph_objects as go
+
 import pandas as pd
-def frequency_table(df):
- # Simple counts
- manufacturer_counts = df['manufacturer'].value_counts().reset_index()
- manufacturer_counts.columns = ['Manufacturer', 'Count']
- 
- # Convert to HTML using the correct method name: .to_html()
- table_html = manufacturer_counts.to_html(
- classes="table table-bordered table-striped table-sm", 
- float_format='%.2f',
- justify='center'
- )
- return table_html
+
+
+def manufacturer_frequency_table(df):
+    manufacturer_counts = (
+        df["manufacturer"]
+        .value_counts()
+        .reset_index()
+    )
+    manufacturer_counts.columns = ["Manufacturer", "Count"]
+
+    return manufacturer_counts.to_html(
+        classes="table table-bordered table-striped table-sm",
+        justify="center",
+        index=False,
+    )
+
+
+def expensive_cars_table(df):
+    expensive_cars = df[df["selling_price"] > 5000]
+    return expensive_cars.to_html(
+        classes="table table-bordered table-striped table-sm",
+        justify="center",
+        index=False,
+    )
+
+
+def manufacturer_total_price_table(df):
+    manufacturer_totals = df.groupby("manufacturer")["selling_price"].sum().to_frame()
+    manufacturer_totals.columns = ["Manufacturer", "Total Selling Price"]
+    return manufacturer_totals.to_html(
+        classes="table table-bordered table-striped table-sm",
+        justify="center",
+        index=False,
+        float_format="%.2f",
+    )
+
+def manufacturer_transmission_table(df):
+    manufacturer_transmission = df.groupby(["manufacturer", "transmission"])["selling_price"].sum().to_frame()
+
+    return manufacturer_transmission.to_html(
+        classes="table table-bordered table-striped table-sm",
+        justify="center",
+        float_format="%.2f",
+    )
